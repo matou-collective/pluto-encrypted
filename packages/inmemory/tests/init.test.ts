@@ -14,7 +14,7 @@ describe("Testing suite", () => {
   runTestSuite({
     describe, it, beforeEach, afterEach
   }, {
-    name: 'inmemory',
+    name: 'my-inmemory',
     getStorage() {
       return InMemory
     },

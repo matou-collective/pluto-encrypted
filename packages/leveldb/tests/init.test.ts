@@ -7,7 +7,6 @@ import { runTestSuite } from '@pluto-encrypted/test-suite';
 
 
 import { createLevelDBStorage } from '../src'
-import { Database } from "../../database/src";
 import { getDefaultCollections } from "@pluto-encrypted/schemas";
 
 const keyData = new Uint8Array(32);
@@ -24,6 +23,9 @@ describe("Testing suite", () => {
     if (fs.existsSync("./db2")) {
       fs.rmdirSync("./db2", { recursive: true })
     }
+    // WIP define a tests which is suitable here
+    // - remove Database reference
+    // - figure out functions to run on createLevelDBStorage which are meaningful
     const db = await Database.createEncrypted(
       {
         name: databaseName,

@@ -12,7 +12,7 @@ describe("Testing suite", () => {
   runTestSuite({
     describe, it, beforeEach, afterEach
   }, {
-    name: 'leveldb',
+    name: 'my-indexdb',
     getStorage() {
       return IndexDB
     },
