@@ -1,17 +1,11 @@
+import "./setup";
+
 import fs from 'fs';
 import { createRxDatabase } from 'rxdb'
 import { describe, it, beforeEach, afterEach } from 'vitest';
 import { runTestSuite } from '@pluto-encrypted/test-suite';
 
-
-import "./setup";
 import { createLevelDBStorage } from '../src'
-import { getDefaultCollections } from "@pluto-encrypted/schemas";
-
-const keyData = new Uint8Array(32);
-
-const databaseName = "prism-db";
-const defaultPassword = Buffer.from(keyData);
 
 function clean () {
   if (fs.existsSync("./db1")) fs.rmdirSync("./db1", { recursive: true })
