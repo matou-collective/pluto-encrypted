@@ -64,7 +64,6 @@ jobs:
         with:
           title: Test Coverage for @pluto-encrypted/database
           multiple-files:  |
-            @pluto-encrypted/database, packages/database/coverage/coverage-summary.json
             @pluto-encrypted/indexdb, packages/indexdb/coverage/coverage-summary.json
             @pluto-encrypted/inmemory, packages/inmemory/coverage/coverage-summary.json
             @pluto-encrypted/leveldb, packages/leveldb/coverage/coverage-summary.json
