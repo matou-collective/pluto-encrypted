@@ -8,26 +8,17 @@ Shared is used by other dependencies of pluto-encrypted to reduce code duplicati
 
 ## Table of contents
 
-### Classes
-
-- [DatabaseBase](../classes/shared.DatabaseBase.md)
-
 ### Interfaces
 
 - [DocWithIndexString](../interfaces/shared.DocWithIndexString.md)
-- [MangoQueryOperators](../interfaces/shared.MangoQueryOperators.md)
 
 ### Type Aliases
 
 - [DBOptions](shared.md#dboptions)
 - [ExtractStaticMethods](shared.md#extractstaticmethods)
-- [MangoQuerySelector](shared.md#mangoqueryselector)
 - [PlainJsonValue](shared.md#plainjsonvalue)
 - [PlainSimpleJsonObject](shared.md#plainsimplejsonobject)
 - [PropertyType](shared.md#propertytype)
-- [RxAttachmentData](shared.md#rxattachmentdata)
-- [RxAttachmentDataBase](shared.md#rxattachmentdatabase)
-- [RxDocumentData](shared.md#rxdocumentdata)
 - [RxDocumentMeta](shared.md#rxdocumentmeta)
 - [UnionToIntersection](shared.md#uniontointersection)
 - [ValuesOf](shared.md#valuesof)
@@ -53,7 +44,7 @@ Shared is used by other dependencies of pluto-encrypted to reduce code duplicati
 
 #### Defined in
 
-[packages/shared/src/index.ts:250](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L250)
+[packages/shared/src/index.ts:258](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L258)
 
 ___
 
@@ -69,23 +60,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:14](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L14)
-
-___
-
-### MangoQuerySelector
-
-Ƭ **MangoQuerySelector**\<`DocType`\>: `Partial`\<\{ [Property in Paths\<DocType\>]: MangoQueryOperators\<any\> \| PropertyType\<DocType, Property\> }\> & \{ `$and?`: [`MangoQuerySelector`](shared.md#mangoqueryselector)\<`DocType`\>[] ; `$nor?`: [`MangoQuerySelector`](shared.md#mangoqueryselector)\<`DocType`\>[] ; `$or?`: [`MangoQuerySelector`](shared.md#mangoqueryselector)\<`DocType`\>[]  }
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `DocType` |
-
-#### Defined in
-
-node_modules/rxdb/dist/types/types/rx-query.d.ts:75
+[packages/shared/src/index.ts:22](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L22)
 
 ___
 
@@ -117,6 +92,16 @@ ___
 
 Ƭ **PropertyType**\<`Type`, `Property`\>: `string` extends `Property` ? `unknown` : `Property` extends keyof `Type` ? `Type`[`Property`] : `Property` extends \`$\{number}\` ? `Type` extends `ReadonlyArray`\<infer ArrayType\> ? `ArrayType` : `unknown` : `Property` extends \`$\{infer Key}.$\{infer Rest}\` ? `Key` extends \`$\{number}\` ? `Type` extends `ReadonlyArray`\<infer ArrayType\> ? [`PropertyType`](shared.md#propertytype)\<`ArrayType`, `Rest`\> : `unknown` : `Key` extends keyof `Type` ? `Type`[`Key`] extends `Map`\<`string`, infer MapType\> ? `MapType` : [`PropertyType`](shared.md#propertytype)\<`Type`[`Key`], `Rest`\> : `unknown` : `unknown`
 
+Typed Mango Query Selector
+
+**`Link`**
+
+https://github.com/mongodb/node-mongodb-native/blob/26bce4a8debb65df5a42dc8599e886c9c83de10d/src/mongo_types.ts
+
+**`Link`**
+
+https://stackoverflow.com/a/58436959/3443137
+
 #### Type parameters
 
 | Name | Type |
@@ -126,56 +111,7 @@ ___
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-query.d.ts:28
-
-___
-
-### RxAttachmentData
-
-Ƭ **RxAttachmentData**: [`RxAttachmentDataBase`](shared.md#rxattachmentdatabase) & \{ `digest`: `string`  }
-
-Meta data of the attachment
-how it is send to, or comes out of the RxStorage implementation.
-
-#### Defined in
-
-node_modules/rxdb/dist/types/types/rx-storage.d.ts:121
-
-___
-
-### RxAttachmentDataBase
-
-Ƭ **RxAttachmentDataBase**: `Object`
-
-#### Type declaration
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `length` | `number` | Size of the attachments data |
-| `type` | `string` | Content type like 'plain/text' |
-
-#### Defined in
-
-node_modules/rxdb/dist/types/types/rx-storage.d.ts:105
-
-___
-
-### RxDocumentData
-
-Ƭ **RxDocumentData**\<`T`\>: `T` & \{ `_attachments`: \{ `[attachmentId: string]`: [`RxAttachmentData`](shared.md#rxattachmentdata);  } ; `_deleted`: `boolean` ; `_meta`: [`RxDocumentMeta`](shared.md#rxdocumentmeta) ; `_rev`: `string`  }
-
-The document data how it comes out of the storage instance.
-Contains all meta data like revision, attachments and deleted-flag.
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `T` |
-
-#### Defined in
-
-node_modules/rxdb/dist/types/types/rx-storage.d.ts:13
+node_modules/rxdb/dist/types/types/rx-query.d.ts:13
 
 ___
 
@@ -197,7 +133,7 @@ Meta data that is attached to each document by RxDB.
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-document.d.ts:33
+node_modules/rxdb/dist/types/types/rx-document.d.ts:53
 
 ___
 
@@ -213,7 +149,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:18](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L18)
+[packages/shared/src/index.ts:26](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L26)
 
 ___
 
@@ -229,7 +165,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:249](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L249)
+[packages/shared/src/index.ts:257](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L257)
 
 ## Functions
 
@@ -259,7 +195,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:207](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L207)
+[packages/shared/src/index.ts:215](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L215)
 
 ___
 
@@ -289,7 +225,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:195](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L195)
+[packages/shared/src/index.ts:203](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L203)
 
 ___
 
@@ -319,7 +255,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:198](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L198)
+[packages/shared/src/index.ts:206](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L206)
 
 ___
 
@@ -349,7 +285,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:204](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L204)
+[packages/shared/src/index.ts:212](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L212)
 
 ___
 
@@ -379,7 +315,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:201](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L201)
+[packages/shared/src/index.ts:209](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L209)
 
 ___
 
@@ -406,7 +342,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:29](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L29)
+[packages/shared/src/index.ts:37](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L37)
 
 ___
 
@@ -424,9 +360,9 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `selector` | [`MangoQuerySelector`](shared.md#mangoqueryselector)\<`RxDocType`\> |
+| `selector` | `MangoQuerySelector`\<`RxDocType`\> |
 | `key` | `string` |
-| `document` | [`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\> |
+| `document` | `RxDocumentData`\<`RxDocType`\> |
 
 #### Returns
 
@@ -434,7 +370,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:42](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L42)
+[packages/shared/src/index.ts:50](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L50)
 
 ___
 
@@ -454,7 +390,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:211](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L211)
+[packages/shared/src/index.ts:219](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L219)
 
 ___
 
@@ -472,8 +408,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `document` | [`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\> |
-| `schema` | `Readonly`\<[`RxJsonSchema`](leveldb.md#rxjsonschema)\<[`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\>\>\> |
+| `document` | `RxDocumentData`\<`RxDocType`\> |
+| `schema` | `Readonly`\<[`RxJsonSchema`](leveldb.md#rxjsonschema)\<`RxDocumentData`\<`RxDocType`\>\>\> |
 
 #### Returns
 
@@ -481,7 +417,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:240](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L240)
+[packages/shared/src/index.ts:248](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L248)
 
 ___
 
@@ -499,7 +435,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `schema` | `Readonly`\<[`RxJsonSchema`](leveldb.md#rxjsonschema)\<[`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\>\>\> |
+| `schema` | `Readonly`\<[`RxJsonSchema`](leveldb.md#rxjsonschema)\<`RxDocumentData`\<`RxDocType`\>\>\> |
 
 #### Returns
 
@@ -507,4 +443,4 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:220](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L220)
+[packages/shared/src/index.ts:228](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L228)

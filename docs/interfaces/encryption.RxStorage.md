@@ -25,7 +25,7 @@ when it is a WebWorker or a WASM process or data is send via BroadcastChannel.
 ### Properties
 
 - [name](encryption.RxStorage.md#name)
-- [statics](encryption.RxStorage.md#statics)
+- [rxdbVersion](encryption.RxStorage.md#rxdbversion)
 
 ### Methods
 
@@ -42,19 +42,22 @@ used to detect if plugins do not work so we can throw proper errors.
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:54
+node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:48
 
 ___
 
-### statics
+### rxdbVersion
 
-• `Readonly` **statics**: `Readonly`\<\{ `checkpointSchema`: `DeepReadonlyObject`\<`JsonSchema`\> ; `prepareQuery`: \<RxDocType\>(`schema`: [`RxJsonSchema`](../modules/leveldb.md#rxjsonschema)\<[`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>, `mutateableQuery`: [`FilledMangoQuery`](../modules/leveldb.md#filledmangoquery)\<`RxDocType`\>) => `any`  }\>
+• `Readonly` **rxdbVersion**: `string`
 
-Static functions
+RxDB version is part of the storage
+so we can have fallbacks and stuff when
+multiple storages with different version are in use
+like in the storage migration plugin.
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:59
+node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:56
 
 ## Methods
 
@@ -83,4 +86,4 @@ that can contain the NoSQL documents of a collection.
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:65
+node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:62

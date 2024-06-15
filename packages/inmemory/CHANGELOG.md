@@ -1,3 +1,16 @@
+# @pluto-encrypted/inmemory [2.0.0](https://github.com/atala-community-projects/pluto-encrypted/compare/@pluto-encrypted/inmemory@1.12.3...@pluto-encrypted/inmemory@2.0.0) (2024-06-15)
+
+
+### Features
+
+* upgrading to rxdb 15.X ([#100](https://github.com/atala-community-projects/pluto-encrypted/issues/100)) ([dc0c731](https://github.com/atala-community-projects/pluto-encrypted/commit/dc0c7312c7858a3700bf0ecb54a532cc51841755))
+
+
+### BREAKING CHANGES
+
+* Upgrading to RXDB 15.X, migrations from older version has not been tested.
+Potentially old databases created in 14.X need to be recreated, but may not!!
+
 ## @pluto-encrypted/inmemory [1.12.3](https://github.com/atala-community-projects/pluto-encrypted/compare/@pluto-encrypted/inmemory@1.12.2...@pluto-encrypted/inmemory@1.12.3) (2024-02-23)
 
 

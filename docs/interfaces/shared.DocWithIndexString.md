@@ -22,11 +22,11 @@
 
 ### doc
 
-• **doc**: [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>
+• **doc**: `RxDocumentData`\<`RxDocType`\>
 
 #### Defined in
 
-[packages/shared/src/index.ts:25](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L25)
+[packages/shared/src/index.ts:33](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L33)
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:24](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L24)
+[packages/shared/src/index.ts:32](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L32)
 
 ___
 
@@ -46,4 +46,4 @@ ___
 
 #### Defined in
 
-[packages/shared/src/index.ts:26](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/shared/src/index.ts#L26)
+[packages/shared/src/index.ts:34](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/shared/src/index.ts#L34)

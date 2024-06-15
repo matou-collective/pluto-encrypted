@@ -30,7 +30,7 @@ const database = db = await Database.createEncrypted({
 
 ### storage
 
-• `Const` **storage**: [`RxStorage`](../interfaces/encryption.RxStorage.md)\<`any`, `any`\>
+• `Const` **storage**: [`RxStorage`](../interfaces/encryption.RxStorage.md)\<`MemoryStorageInternals`\<`any`\>, `RxStorageMemoryInstanceCreationOptions`\>
 
 InMemory storage
 
@@ -40,4 +40,4 @@ Use this as storage in our RXDB database. For now there is no initialisation set
 
 #### Defined in
 
-[packages/inmemory/src/index.ts:62](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/inmemory/src/index.ts#L62)
+[packages/inmemory/src/index.ts:34](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/inmemory/src/index.ts#L34)

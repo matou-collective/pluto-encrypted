@@ -35,11 +35,11 @@ Main storage interface for LevelDBStorage
 
 ### bulkGet
 
-• **bulkGet**: (`keys`: `string`[]) => `Promise`\<[`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>[]\>
+• **bulkGet**: (`keys`: `string`[]) => `Promise`\<`RxDocumentData`\<`RxDocType`\>[]\>
 
 #### Type declaration
 
-▸ (`keys`): `Promise`\<[`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>[]\>
+▸ (`keys`): `Promise`\<`RxDocumentData`\<`RxDocType`\>[]\>
 
 ##### Parameters
 
@@ -49,17 +49,17 @@ Main storage interface for LevelDBStorage
 
 ##### Returns
 
-`Promise`\<[`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>[]\>
+`Promise`\<`RxDocumentData`\<`RxDocType`\>[]\>
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:52](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L52)
+[packages/leveldb/src/leveldb/types.ts:52](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L52)
 
 ___
 
 ### bulkPut
 
-• **bulkPut**: (`items`: `any`, `collectionName`: `string`, `schema`: `Readonly`\<[`RxJsonSchema`](../modules/leveldb.md#rxjsonschema)\<[`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>\>) => `Promise`\<`any`\>
+• **bulkPut**: (`items`: `any`, `collectionName`: `string`, `schema`: `Readonly`\<[`RxJsonSchema`](../modules/leveldb.md#rxjsonschema)\<`RxDocumentData`\<`RxDocType`\>\>\>) => `Promise`\<`any`\>
 
 #### Type declaration
 
@@ -71,7 +71,7 @@ ___
 | :------ | :------ |
 | `items` | `any` |
 | `collectionName` | `string` |
-| `schema` | `Readonly`\<[`RxJsonSchema`](../modules/leveldb.md#rxjsonschema)\<[`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>\> |
+| `schema` | `Readonly`\<[`RxJsonSchema`](../modules/leveldb.md#rxjsonschema)\<`RxDocumentData`\<`RxDocType`\>\>\> |
 
 ##### Returns
 
@@ -79,7 +79,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:44](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L44)
+[packages/leveldb/src/leveldb/types.ts:44](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L44)
 
 ___
 
@@ -97,7 +97,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:49](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L49)
+[packages/leveldb/src/leveldb/types.ts:49](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L49)
 
 ___
 
@@ -115,27 +115,27 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:48](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L48)
+[packages/leveldb/src/leveldb/types.ts:48](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L48)
 
 ___
 
 ### documents
 
-• **documents**: `Map`\<`string`, [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>
+• **documents**: `Map`\<`string`, `RxDocumentData`\<`RxDocType`\>\>
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:40](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L40)
+[packages/leveldb/src/leveldb/types.ts:40](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L40)
 
 ___
 
 ### get
 
-• **get**: (`key`: `string`) => `Promise`\<``null`` \| [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>
+• **get**: (`key`: `string`) => `Promise`\<``null`` \| `RxDocumentData`\<`RxDocType`\>\>
 
 #### Type declaration
 
-▸ (`key`): `Promise`\<``null`` \| [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>
+▸ (`key`): `Promise`\<``null`` \| `RxDocumentData`\<`RxDocType`\>\>
 
 ##### Parameters
 
@@ -145,21 +145,21 @@ ___
 
 ##### Returns
 
-`Promise`\<``null`` \| [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>
+`Promise`\<``null`` \| `RxDocumentData`\<`RxDocType`\>\>
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:50](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L50)
+[packages/leveldb/src/leveldb/types.ts:50](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L50)
 
 ___
 
 ### getDocuments
 
-• **getDocuments**: (`query`: `string`[]) => `Promise`\<`Map`\<`string`, [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>\>
+• **getDocuments**: (`query`: `string`[]) => `Promise`\<`Map`\<`string`, `RxDocumentData`\<`RxDocType`\>\>\>
 
 #### Type declaration
 
-▸ (`query`): `Promise`\<`Map`\<`string`, [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>\>
+▸ (`query`): `Promise`\<`Map`\<`string`, `RxDocumentData`\<`RxDocType`\>\>\>
 
 ##### Parameters
 
@@ -169,11 +169,11 @@ ___
 
 ##### Returns
 
-`Promise`\<`Map`\<`string`, [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>\>
+`Promise`\<`Map`\<`string`, `RxDocumentData`\<`RxDocType`\>\>\>
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:39](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L39)
+[packages/leveldb/src/leveldb/types.ts:39](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L39)
 
 ___
 
@@ -197,7 +197,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:51](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L51)
+[packages/leveldb/src/leveldb/types.ts:51](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L51)
 
 ___
 
@@ -207,7 +207,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:42](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L42)
+[packages/leveldb/src/leveldb/types.ts:42](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L42)
 
 ___
 
@@ -217,23 +217,23 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:41](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L41)
+[packages/leveldb/src/leveldb/types.ts:41](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L41)
 
 ___
 
 ### schema
 
-• **schema**: [`RxJsonSchema`](../modules/leveldb.md#rxjsonschema)\<[`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>\>
+• **schema**: [`RxJsonSchema`](../modules/leveldb.md#rxjsonschema)\<`RxDocumentData`\<`RxDocType`\>\>
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:43](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L43)
+[packages/leveldb/src/leveldb/types.ts:43](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L43)
 
 ___
 
 ### set
 
-• **set**: (`key`: `string`, `data`: [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\>) => `Promise`\<`void`\>
+• **set**: (`key`: `string`, `data`: `RxDocumentData`\<`RxDocType`\>) => `Promise`\<`void`\>
 
 #### Type declaration
 
@@ -244,7 +244,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `key` | `string` |
-| `data` | [`RxDocumentData`](../modules/shared.md#rxdocumentdata)\<`RxDocType`\> |
+| `data` | `RxDocumentData`\<`RxDocType`\> |
 
 ##### Returns
 
@@ -252,7 +252,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:53](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L53)
+[packages/leveldb/src/leveldb/types.ts:53](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L53)
 
 ___
 
@@ -277,7 +277,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:54](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L54)
+[packages/leveldb/src/leveldb/types.ts:54](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L54)
 
 ___
 
@@ -302,4 +302,4 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:55](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L55)
+[packages/leveldb/src/leveldb/types.ts:55](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L55)

@@ -7,7 +7,6 @@
 This is a RXDB LevelDB storage that supports encryption middleware.
 In order to use this in your pluto-encrypted database you must write the following code:
 Creating a LevelDB compatible storage is very simple.
-
 ```typescript
 import { createLevelDBStorage } from "@pluto-encrypted/leveldb";
 import { Database } from "@pluto-encrypted/database";
@@ -34,7 +33,6 @@ const database = db = await Database.createEncrypted({
 
 - [CRDTSchemaOptions](leveldb.md#crdtschemaoptions)
 - [CompressionMode](leveldb.md#compressionmode)
-- [DefaultPreparedQuery](leveldb.md#defaultpreparedquery)
 - [FilledMangoQuery](leveldb.md#filledmangoquery)
 - [IndexType](leveldb.md#indextype)
 - [LevelDBDataIndex](leveldb.md#leveldbdataindex)
@@ -94,46 +92,21 @@ ___
 
 ### CompressionMode
 
-Ƭ **CompressionMode**: ``"deflate"``
+Ƭ **CompressionMode**: ``"deflate"`` \| ``"gzip"``
 
 **`Link`**
 
 https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API
-Notice that atm we only support the deflate mode because firefox
-does not support the CompressionStream API.
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-schema.d.ts:89
-
-___
-
-### DefaultPreparedQuery
-
-Ƭ **DefaultPreparedQuery**\<`RxDocType`\>: `Object`
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `RxDocType` |
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `query` | [`FilledMangoQuery`](leveldb.md#filledmangoquery)\<`RxDocType`\> |
-| `queryPlan` | [`RxQueryPlan`](leveldb.md#rxqueryplan) |
-
-#### Defined in
-
-node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:148
+node_modules/rxdb/dist/types/types/rx-schema.d.ts:87
 
 ___
 
 ### FilledMangoQuery
 
-Ƭ **FilledMangoQuery**\<`RxDocType`\>: `Override`\<[`MangoQuery`](leveldb.md#mangoquery)\<`RxDocType`\>, \{ `index?`: `string`[] ; `selector`: [`MangoQuerySelector`](shared.md#mangoqueryselector)\<`RxDocType`\> ; `skip`: `number` ; `sort`: [`MangoQuerySortPart`](leveldb.md#mangoquerysortpart)\<`RxDocType`\>[]  }\>
+Ƭ **FilledMangoQuery**\<`RxDocType`\>: `Object`
 
 User provided mango queries will be filled up by RxDB via normalizeMangoQuery()
 so we do not have to do many if-field-exist tests in the internals.
@@ -144,9 +117,19 @@ so we do not have to do many if-field-exist tests in the internals.
 | :------ |
 | `RxDocType` |
 
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `index?` | `string`[] | In the normalized mango query, the index must always be a string[], never just a string. This makes it easier to use the query because we do not have to do an array check. |
+| `limit?` | `number` | - |
+| `selector` | `MangoQuerySelector`\<`RxDocumentData`\<`RxDocType`\>\> | The selector is required here. |
+| `skip` | `number` | Skip must be set which defaults to 0 |
+| `sort` | [`MangoQuerySortPart`](leveldb.md#mangoquerysortpart)\<`RxDocumentData`\<`RxDocType`\>\>[] | In contrast to the user-provided MangoQuery, the sorting is required here because RxDB has to ensure that the primary key is always part of the sort params. |
+
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:75
+node_modules/rxdb/dist/types/types/rx-storage.interface.d.ts:72
 
 ___
 
@@ -158,7 +141,7 @@ Index of a table can be a string or a number
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:7](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L7)
+[packages/leveldb/src/leveldb/types.ts:7](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L7)
 
 ___
 
@@ -172,13 +155,13 @@ informed
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:18](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L18)
+[packages/leveldb/src/leveldb/types.ts:18](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L18)
 
 ___
 
 ### LevelDBDataStructure
 
-Ƭ **LevelDBDataStructure**\<`RxDocType`\>: `Map`\<[`IndexType`](leveldb.md#indextype), [`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\>\>
+Ƭ **LevelDBDataStructure**\<`RxDocType`\>: `Map`\<[`IndexType`](leveldb.md#indextype), `RxDocumentData`\<`RxDocType`\>\>
 
 LevelDB internal data structure is a Map with an index
 and RxDocumentData from RXDB
@@ -191,13 +174,13 @@ and RxDocumentData from RXDB
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:12](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L12)
+[packages/leveldb/src/leveldb/types.ts:12](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L12)
 
 ___
 
 ### LevelDBInternalConstructor
 
-Ƭ **LevelDBInternalConstructor**\<`RxDocType`\>: \{ `dbPath`: `string` ; `documents?`: `Map`\<`string`, [`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\>\> ; `refCount`: `number` ; `schema`: [`RxJsonSchema`](leveldb.md#rxjsonschema)\<[`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\>\>  } \| \{ `documents?`: `Map`\<`string`, [`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\>\> ; `level`: [`LevelDBType`](leveldb.md#leveldbtype) ; `refCount`: `number` ; `schema`: [`RxJsonSchema`](leveldb.md#rxjsonschema)\<[`RxDocumentData`](shared.md#rxdocumentdata)\<`RxDocType`\>\>  }
+Ƭ **LevelDBInternalConstructor**\<`RxDocType`\>: \{ `dbPath`: `string` ; `documents?`: `Map`\<`string`, `RxDocumentData`\<`RxDocType`\>\> ; `refCount`: `number` ; `schema`: [`RxJsonSchema`](leveldb.md#rxjsonschema)\<`RxDocumentData`\<`RxDocType`\>\>  } \| \{ `documents?`: `Map`\<`string`, `RxDocumentData`\<`RxDocType`\>\> ; `level`: [`LevelDBType`](leveldb.md#leveldbtype) ; `refCount`: `number` ; `schema`: [`RxJsonSchema`](leveldb.md#rxjsonschema)\<`RxDocumentData`\<`RxDocType`\>\>  }
 
 #### Type parameters
 
@@ -207,13 +190,13 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:24](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L24)
+[packages/leveldb/src/leveldb/types.ts:24](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L24)
 
 ___
 
 ### LevelDBPreparedQuery
 
-Ƭ **LevelDBPreparedQuery**\<`DocType`\>: [`DefaultPreparedQuery`](leveldb.md#defaultpreparedquery)\<`DocType`\>
+Ƭ **LevelDBPreparedQuery**\<`DocType`\>: `PreparedQuery`\<`DocType`\>
 
 #### Type parameters
 
@@ -223,7 +206,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:23](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L23)
+[packages/leveldb/src/leveldb/types.ts:23](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L23)
 
 ___
 
@@ -233,7 +216,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:60](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L60)
+[packages/leveldb/src/leveldb/types.ts:60](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L60)
 
 ___
 
@@ -245,7 +228,7 @@ Query type for LevelDB
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:22](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L22)
+[packages/leveldb/src/leveldb/types.ts:22](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L22)
 
 ___
 
@@ -261,7 +244,7 @@ ___
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-query.d.ts:124
+node_modules/rxdb/dist/types/types/rx-query.d.ts:111
 
 ___
 
@@ -277,7 +260,7 @@ ___
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-query.d.ts:111
+node_modules/rxdb/dist/types/types/rx-query.d.ts:98
 
 ___
 
@@ -296,11 +279,11 @@ ___
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `index?` | `string` \| `string`[] | By default, the RxStorage implementation decides which index to use when running the query. For better performance, a different index might be defined by setting it in the query. How this improves performance and if the defined index is used, depends on the RxStorage implementation. |
-| `selector?` | [`MangoQuerySelector`](shared.md#mangoqueryselector)\<`RxDocType`\> | Selector is optional, if not given, the query matches all documents that are not _deleted=true. |
+| `selector?` | `MangoQuerySelector`\<`RxDocType`\> | Selector is optional, if not given, the query matches all documents that are not _deleted=true. |
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-query.d.ts:92
+node_modules/rxdb/dist/types/types/rx-query.d.ts:79
 
 ___
 
@@ -316,7 +299,7 @@ https://github.com/pubkey/rxdb/issues/1972
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-query.d.ts:87
+node_modules/rxdb/dist/types/types/rx-query.d.ts:74
 
 ___
 
@@ -332,7 +315,7 @@ ___
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-query.d.ts:88
+node_modules/rxdb/dist/types/types/rx-query.d.ts:75
 
 ___
 
@@ -373,7 +356,8 @@ ___
 | `crdt?` | [`CRDTSchemaOptions`](leveldb.md#crdtschemaoptions)\<`RxDocType`\> | - |
 | `description?` | `string` | - |
 | `encrypted?` | `string`[] \| readonly `string`[] | - |
-| `indexes?` | (`string` \| `string`[])[] \| (`string` \| readonly `string`[])[] \| readonly (`string` \| `string`[])[] \| readonly (`string` \| readonly `string`[])[] | - |
+| `indexes?` | (`string` \| `string`[])[] \| (`string` \| readonly `string`[])[] \| readonly (`string` \| `string`[])[] \| readonly (`string` \| readonly `string`[])[] | Indexes that will be used for the queries. RxDB will internally prepend the _deleted field to the index because queries do NOT return documents with _deleted=true. |
+| `internalIndexes?` | `string`[][] \| readonly `string`[][] | Internally used indexes that do not get _deleted prepended by RxDB. Use these to speed up queries that are run manually on the storage or to speed up requests when you use the RxDB server. These could also be utilised when you build a plugin that has to query documents without respecting the _deleted value. |
 | `keyCompression?` | `boolean` | - |
 | `primaryKey` | [`PrimaryKey`](leveldb.md#primarykey)\<`RxDocType`\> | The primary key of the documents. Must be in the top level of the properties of the schema and that property must have the type 'string' |
 | `properties` | \{ [key in StringKeys\<RxDocType\>]: TopLevelProperty } | - |
@@ -387,7 +371,7 @@ ___
 
 #### Defined in
 
-node_modules/rxdb/dist/types/types/rx-schema.d.ts:91
+node_modules/rxdb/dist/types/types/rx-schema.d.ts:89
 
 ___
 
@@ -404,7 +388,7 @@ ___
 | `inclusiveStart` | `boolean` | True if the first matching document must also be included into the result set. |
 | `index` | `string`[] | - |
 | `selectorSatisfiedByIndex` | `boolean` | If the whole selector matching is satisfied by the index, we do not have to run a does-document-data-match-query stuff. |
-| `sortFieldsSameAsIndexFields` | `boolean` | If the index does not match the sort params, we have to resort the query results. |
+| `sortSatisfiedByIndex` | `boolean` | If the index does not match the sort params, we have to resort the query results manually after fetching them from the index. |
 | `startKeys` | [`RxQueryPlanKey`](leveldb.md#rxqueryplankey)[] | TODO add a flag that determines if we have to run the selector matching on all results or if the used index anyway matches ALL operators. |
 
 #### Defined in
@@ -435,7 +419,7 @@ ___
 
 #### Defined in
 
-[packages/leveldb/src/leveldb/types.ts:58](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/leveldb/types.ts#L58)
+[packages/leveldb/src/leveldb/types.ts:58](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/leveldb/types.ts#L58)
 
 ___
 
@@ -484,4 +468,4 @@ node_modules/rxdb/dist/types/types/util.d.ts:50
 
 #### Defined in
 
-[packages/leveldb/src/index.ts:97](https://github.com/atala-community-projects/pluto-encrypted/blob/b730e61/packages/leveldb/src/index.ts#L97)
+[packages/leveldb/src/index.ts:116](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/leveldb/src/index.ts#L116)
