@@ -1,3 +1,20 @@
+## @pluto-encrypted/leveldb [2.0.1](https://github.com/atala-community-projects/pluto-encrypted/compare/@pluto-encrypted/leveldb@2.0.0...@pluto-encrypted/leveldb@2.0.1) (2024-06-15)
+
+
+### Bug Fixes
+
+* upgrade package dependencies ([#101](https://github.com/atala-community-projects/pluto-encrypted/issues/101)) ([3bc9d69](https://github.com/atala-community-projects/pluto-encrypted/commit/3bc9d694e24abc9f3d96862081be4b846e63d423))
+
+
+
+
+
+### Dependencies
+
+* **@pluto-encrypted/encryption:** upgraded to 2.0.1
+* **@pluto-encrypted/shared:** upgraded to 2.0.1
+* **@pluto-encrypted/test-suite:** upgraded to 2.0.1
+
 # @pluto-encrypted/leveldb [2.0.0](https://github.com/atala-community-projects/pluto-encrypted/compare/@pluto-encrypted/leveldb@1.12.2...@pluto-encrypted/leveldb@2.0.0) (2024-06-15)
 
 

@@ -1,3 +1,10 @@
+## @pluto-encrypted/encryption [2.0.1](https://github.com/atala-community-projects/pluto-encrypted/compare/@pluto-encrypted/encryption@2.0.0...@pluto-encrypted/encryption@2.0.1) (2024-06-15)
+
+
+### Bug Fixes
+
+* upgrade package dependencies ([#101](https://github.com/atala-community-projects/pluto-encrypted/issues/101)) ([3bc9d69](https://github.com/atala-community-projects/pluto-encrypted/commit/3bc9d694e24abc9f3d96862081be4b846e63d423))
+
 ## @pluto-encrypted/encryption [1.9.3](https://github.com/atala-community-projects/pluto-encrypted/compare/@pluto-encrypted/encryption@1.9.2...@pluto-encrypted/encryption@1.9.3) (2024-01-05)
 
 

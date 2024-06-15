@@ -65,7 +65,7 @@ ___
 
 #### Defined in
 
-[packages/encryption/src/index.ts:110](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/encryption/src/index.ts#L110)
+[packages/encryption/src/index.ts:110](https://github.com/atala-community-projects/pluto-encrypted/blob/788ef360/packages/encryption/src/index.ts#L110)
 
 ## Functions
 
@@ -86,7 +86,7 @@ ___
 
 #### Defined in
 
-[packages/encryption/src/index.ts:82](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/encryption/src/index.ts#L82)
+[packages/encryption/src/index.ts:82](https://github.com/atala-community-projects/pluto-encrypted/blob/788ef360/packages/encryption/src/index.ts#L82)
 
 ___
 
@@ -107,7 +107,7 @@ ___
 
 #### Defined in
 
-[packages/encryption/src/index.ts:67](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/encryption/src/index.ts#L67)
+[packages/encryption/src/index.ts:67](https://github.com/atala-community-projects/pluto-encrypted/blob/788ef360/packages/encryption/src/index.ts#L67)
 
 ___
 
@@ -139,4 +139,4 @@ RxStorage<Internals, InstanceCreationOptions>
 
 #### Defined in
 
-[packages/encryption/src/index.ts:120](https://github.com/atala-community-projects/pluto-encrypted/blob/95ce3eb4/packages/encryption/src/index.ts#L120)
+[packages/encryption/src/index.ts:120](https://github.com/atala-community-projects/pluto-encrypted/blob/788ef360/packages/encryption/src/index.ts#L120)
