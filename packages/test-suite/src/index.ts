@@ -3,15 +3,75 @@
  * @module test-suite
  * @description This package can be used as a compliance test to validate a new storage created by you or the community.
  */
-import { type FilledMangoQuery, type RxDocumentData, type RxDocumentWriteData, type RxJsonSchema, type RxStorage, type RxStorageBulkWriteResponse, type RxStorageInstance, type RxStorageInstanceCreationParams, clone, createRevision, ensureNotFalsy, fillWithDefaultSettings, flatCloneDocWithMeta, getPseudoSchemaForVersion, getQueryMatcher, getSortComparator, newRxError, now, parseRevision, randomCouchString, shuffleArray } from 'rxdb'
-import { EXAMPLE_REVISION_1, EXAMPLE_REVISION_2, EXAMPLE_REVISION_3, EXAMPLE_REVISION_4, type NestedDoc, type OptionalValueTestDoc, type RandomDoc, type RxTestStorage, type TestDocType, type TestSuite, getNestedDocSchema, getTestDataSchema, getWriteData, prepareQuery, testContext, testCorrectQueries, withIndexes } from './helper'
+import assert from 'assert';
+import type {
+  FilledMangoQuery,
+  RxDocumentData,
+  RxDocumentWriteData,
+  RxJsonSchema,
+  RxStorage,
+  RxStorageBulkWriteResponse,
+  RxStorageInstance,
+} from 'rxdb'
+import {
+  clone,
+  createRevision,
+  ensureNotFalsy,
+  fillWithDefaultSettings,
+  flatCloneDocWithMeta,
+  getPseudoSchemaForVersion,
+  getQueryMatcher,
+  getSortComparator,
+  normalizeMangoQuery,
+  now,
+  parseRevision,
+  randomCouchString,
+  shuffleArray
+} from 'rxdb'
+import type {
+  NestedDoc,
+  OptionalValueTestDoc,
+  RandomDoc,
+  RxTestStorage,
+  TestDocType,
+  TestSuite,
+} from './helper'
+import {
+  EXAMPLE_REVISION_1,
+  EXAMPLE_REVISION_2,
+  EXAMPLE_REVISION_3,
+  EXAMPLE_REVISION_4,
+  getNestedDocSchema,
+  getTestDataSchema,
+  getWriteData,
+  prepareQuery,
+  testContext,
+  testCorrectQueries,
+  withIndexes
+} from './helper'
 import * as schemas from './helper/schemas'
-import { type HeroArrayDocumentType, type NestedHumanDocumentType, type SimpleHumanV3DocumentType, human, nestedHuman, simpleHumanV3 } from './helper/schema-objects'
-import { type HumanDocumentType } from './helper/schemas'
-import { randomString } from 'async-test-util'
+import type {
+  HeroArrayDocumentType,
+  NestedHumanDocumentType,
+  SimpleHumanV3DocumentType,
+} from './helper/schema-objects'
+import {
+  human,
+  nestedHuman,
+  simpleHumanV3
+} from './helper/schema-objects'
+import type {
+  HumanDocumentType
+} from './helper/schemas'
+import {
+  randomString
+} from 'async-test-util'
+import {
+  schemaObjects
+} from 'rxdb/plugins/test-utils'
 
 let storage: RxStorage<any, any>
-let storageInstance: RxStorageInstance<any, any, any, any>
+let storageInstance: RxStorageInstance<any, any, any, any> | undefined
 
 export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void {
   const { describe, it, beforeEach, afterEach } = suite
@@ -23,6 +83,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
     afterEach(async () => {
       if (storageInstance) {
         await storageInstance.cleanup(Infinity)
+        storageInstance = undefined;
       }
     })
 
@@ -38,8 +99,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             collectionName: randomCouchString(12),
             schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
             options: {},
-            multiInstance: false,
-            devMode: true,
+            multiInstance: true,
+            devMode: false,
             password: randomCouchString(24)
           })
 
@@ -57,35 +118,14 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName,
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true,
+          multiInstance: true,
+          devMode: false,
           password: randomCouchString(24)
         })
         expect(storageInstance.collectionName).toBe(collectionName)
         expect(storageInstance.databaseName).toBe(databaseName)
       })
 
-      /**
-       * This test ensures that people do not accidentally set
-       * keyCompression: true in the schema but then forget to use
-       * the key-compression RxStorage wrapper.
-       */
-      it('must throw if keyCompression is set but no key-compression plugin is used', async ({ expect }) => {
-        const schema = getPseudoSchemaForVersion<TestDocType>(0, 'key')
-        schema.keyCompression = true
-
-        const params: RxStorageInstanceCreationParams<TestDocType, any> = {
-          databaseInstanceToken: randomCouchString(10),
-          databaseName: randomCouchString(12),
-          collectionName: randomCouchString(12),
-          schema,
-          options: {},
-          multiInstance: false,
-          devMode: true,
-          password: randomCouchString(24)
-        }
-        await expect(async () => await storage.createStorageInstance<TestDocType>(params)).rejects.toThrowError(newRxError('UT5', { args: { databaseName: params.databaseName, collectionName: params.collectionName } }))
-      })
     })
 
     describe('.bulkWrite()', () => {
@@ -96,12 +136,12 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const pkey = 'foobar'
         const docData: RxDocumentWriteData<TestDocType> = {
-          key: 'foobar',
+          key: pkey,
           value: 'barfoo1',
           _deleted: false,
           _meta: {
@@ -116,9 +156,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-
-        expect(writeResponse.error).toStrictEqual({})
-        const first = writeResponse.success[pkey]
+        expect(writeResponse.error).toStrictEqual([])
+        const first = writeResponse.success.at(0);
         expect(docData).toStrictEqual(first)
       })
 
@@ -129,8 +168,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const pkey = 'foobar'
         const writeData: RxDocumentWriteData<TestDocType> = {
@@ -156,10 +195,9 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-
-        expect(writeResponse.success).toStrictEqual({})
-        expect(writeResponse.error[pkey]).not.toBe(undefined)
-        const first = writeResponse.error[pkey]!
+        expect(writeResponse.success).toStrictEqual([])
+        expect(writeResponse.error.at(0)).not.toBe(undefined)
+        const first = writeResponse.error.at(0)!
 
         expect(first.status).toBe(409)
         expect(first.documentId).toBe(pkey)
@@ -188,8 +226,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const pkey = 'foobar'
         const writeData: RxDocumentWriteData<TestDocType> = {
@@ -221,10 +259,9 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           testContext
         )
 
-        expect(first.error).toStrictEqual({})
-        expect(first.success[pkey]!.value).toBe('first')
-
-        expect(second.error[pkey]!.status).toBe(409)
+        expect(first.error).toStrictEqual([])
+        expect(first.success.at(0)!.value).toBe('first')
+        expect(second.error.at(0)!.status).toBe(409)
       })
 
       it('should not find the deleted document when findDocumentsById(false)', async ({ expect }) => {
@@ -234,8 +271,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const pkey = 'foobar'
@@ -257,8 +294,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           testContext
         )
 
-        expect(insertResponse.error).toStrictEqual({})
-        const first = insertResponse.success[pkey]
+        expect(insertResponse.error).toStrictEqual([])
+        const first = insertResponse.success.at(0)!
 
         // make an update
         const updateData = Object.assign({}, insertData, {
@@ -268,6 +305,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             lwt: now()
           }
         })
+
         const updateResponse = await storageInstance.bulkWrite(
           [{
             previous: insertData,
@@ -275,7 +313,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-        expect(updateResponse.error).toStrictEqual({})
+
+        expect(updateResponse.error).toStrictEqual([])
 
         // make the delete
         const toDelete = {
@@ -285,7 +324,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             _deleted: true,
             _rev: EXAMPLE_REVISION_3,
             _meta: {
-              lwt: now()
+              lwt: now(),
             }
           })
         }
@@ -295,11 +334,11 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           testContext
         )
 
-        expect(deleteResponse.error).toStrictEqual({})
+        expect(deleteResponse.error).toStrictEqual([])
 
         const foundDoc = await storageInstance.findDocumentsById([pkey], false)
 
-        expect(foundDoc).toStrictEqual({})
+        expect(foundDoc).toStrictEqual([])
       })
 
       it('should be able to unset a property', async ({ expect }) => {
@@ -312,8 +351,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: schema as any,
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const docId = 'foobar'
         const insertData: RxDocumentWriteData<OptionalValueTestDoc> = {
@@ -332,10 +371,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-
-        expect(writeResponse.success[docId]).not.toBe(undefined)
-
-        const insertResponse = writeResponse.success[docId]!
+        expect(writeResponse.success.at(0)).not.toBe(undefined)
+        const insertResponse = writeResponse.success.at(0)
         const insertDataAfterWrite: RxDocumentData<OptionalValueTestDoc> = Object.assign(
           {},
           insertResponse,
@@ -343,7 +380,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             _rev: insertResponse._rev
           }
         )
-
         const updateResponse = await storageInstance.bulkWrite(
           [{
             previous: insertDataAfterWrite,
@@ -353,21 +389,19 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
               _deleted: false,
               _rev: EXAMPLE_REVISION_2,
               _meta: {
-                lwt: now()
+                lwt: now(),
+
               }
             }
           }],
           testContext
         )
+        expect(updateResponse.success.at(0)).not.toBe(undefined)
 
-        expect(updateResponse.success[docId]).not.toBe(undefined)
-
-        const updateResponseDoc = updateResponse.success[docId]!
-
+        const updateResponseDoc = updateResponse.success.at(0)!
         delete (updateResponseDoc)._deleted
         delete (updateResponseDoc)._rev
         delete (updateResponseDoc)._meta
-
         expect(updateResponseDoc).toStrictEqual({
           key: docId,
           _attachments: {}
@@ -382,8 +416,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const key = 'foobar'
@@ -406,7 +440,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-        expect(res1.error).toStrictEqual({})
+        expect(res1.error).toStrictEqual([])
 
         // change once
         let newDocData: RxDocumentData<TestDocType> = clone(docData)
@@ -421,7 +455,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-        expect(res2.error).toStrictEqual({})
+        expect(res2.error).toStrictEqual([])
         docData = newDocData
 
         // change again
@@ -439,14 +473,15 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-        expect(res3.error).toStrictEqual({})
+        expect(res3.error).toStrictEqual([])
 
         docData = newDocData
 
         const viaStorage = await storageInstance.findDocumentsById([key], true)
-        const viaStorageDoc = ensureNotFalsy(viaStorage[key])
+        const viaStorageDoc = ensureNotFalsy(viaStorage.at(0))
         expect(parseRevision(viaStorageDoc._rev).height).toBe(3)
       })
+
       it('should be able to create another instance after a write', async () => {
         const databaseName = randomCouchString(12)
         storageInstance = await storage.createStorageInstance<TestDocType>({
@@ -455,8 +490,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const docData: RxDocumentWriteData<TestDocType> = {
           key: 'foobar',
@@ -480,8 +515,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         await storageInstance2.bulkWrite(
           [{
@@ -507,11 +542,10 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const pkey = 'foobar'
-        // insert
         const docData: RxDocumentData<TestDocType> = {
           key: pkey,
           value: 'barfoo1',
@@ -528,7 +562,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }],
           testContext
         )
-        expect(insertResponse.error).toStrictEqual({})
+        expect(insertResponse.error).toStrictEqual([])
 
         // update
         const updated = flatCloneDocWithMeta(docData)
@@ -543,13 +577,13 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           testContext
         )
 
-        expect(updateResponse.error).toStrictEqual({})
+        expect(updateResponse.error).toStrictEqual([])
 
         // find again
         const getDocFromDb = await storageInstance.findDocumentsById([docData.key], false)
 
-        expect(getDocFromDb[pkey]).not.toBe(undefined)
-        const docFromDb = getDocFromDb[pkey]!
+        expect(getDocFromDb.at(0)).not.toBe(undefined)
+        const docFromDb = getDocFromDb.at(0)!
 
         expect(docFromDb._rev).toEqual(EXAMPLE_REVISION_4)
       })
@@ -570,8 +604,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
                 collectionName: randomCouchString(12),
                 schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
                 options: {},
-                multiInstance: false,
-                devMode: true
+                multiInstance: true,
+                devMode: false
               })
               await Promise.all(
                 new Array(docsAmount)
@@ -603,8 +637,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const umlauts = 'äöüßé'
         const pkey = 'foobar' + umlauts
@@ -626,14 +660,14 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           testContext
         )
 
-        expect(insertResponse.error).toStrictEqual({})
+        expect(insertResponse.error).toStrictEqual([])
 
         // find again
         const getDocFromDb = await storageInstance.findDocumentsById([docData.key], false)
 
-        expect(getDocFromDb[pkey]).not.toBe(undefined)
+        expect(getDocFromDb.at(0)).not.toBe(undefined)
 
-        const docFromDb = getDocFromDb[pkey]
+        const docFromDb = getDocFromDb.at(0)
 
         expect(docFromDb.value).toBe('value' + umlauts)
 
@@ -657,7 +691,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
         )
         const getDocFromDb2 = await storageInstance.findDocumentsById([docData2.key], false)
 
-        expect(getDocFromDb2[pkey2]).not.toBe(undefined)
+        expect(getDocFromDb2.at(0)).not.toBe(undefined)
       })
     })
 
@@ -689,8 +723,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             ]
           }),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const query: FilledMangoQuery<any> = {
@@ -723,8 +757,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getTestDataSchema(),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const matchingValue = 'foobar'
@@ -771,8 +805,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getTestDataSchema(),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const matchingValue = 'aaa'
@@ -830,11 +864,11 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion(0, '_id' as any),
           options: {},
-          multiInstance: false,
-          devMode: true
-        })
+          multiInstance: true,
+          devMode: false
+        });
 
-        const query: FilledMangoQuery<schemas.HumanDocumentType> = {
+        const query: FilledMangoQuery<HumanDocumentType> = {
           selector: {
             age: {
               $gt: 10,
@@ -845,22 +879,22 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             { _id: 'asc' }
           ],
           skip: 0
-        }
-
-        const queryMatcher = getQueryMatcher(
+        };
+        const matcher = getQueryMatcher(
           storageInstance.schema,
           query
-        )
+        );
+        const doc1: any = schemaObjects.humanData();
+        doc1._id = 'aa';
+        doc1.age = 1;
+        const doc2: any = schemaObjects.humanData();
+        doc2._id = 'bb';
+        doc2.age = 100;
 
-        const doc1: any = human()
-        doc1._id = 'aa'
-        doc1.age = 1
-        const doc2: any = human()
-        doc2._id = 'bb'
-        doc2.age = 100
+        assert.strictEqual(matcher(doc1), false);
+        assert.strictEqual(matcher(doc2), true);
 
-        expect(queryMatcher(doc1)).toStrictEqual(false)
-        expect(queryMatcher(doc2)).toStrictEqual(true)
+        storageInstance.remove();
       })
       it('should match the nested document', ({ expect }) => {
         const schema = getNestedDocSchema()
@@ -878,7 +912,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
 
         const queryMatcher = getQueryMatcher(
           schema,
-          query
+          normalizeMangoQuery(schema, query)
         )
 
         const notMatchingDoc = {
@@ -920,8 +954,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<{ key: string, value: string }>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const writeData = {
@@ -992,8 +1026,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getTestDataSchema(),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         await storageInstance.bulkWrite([
@@ -1025,11 +1059,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
         expect(allDocs.documents[1].value).toBe('b')
         expect(allDocs.documents[2].value).toBe('a')
       })
-
-      /**
-                   * For event-reduce to work,
-                   * we must ensure we there is always a deterministic sort order.
-                   */
       it('should have the same deterministic order of .query() and .getSortComparator()', async ({ expect }) => {
         const schema: RxJsonSchema<RxDocumentData<RandomDoc>> = fillWithDefaultSettings({
           version: 0,
@@ -1057,12 +1086,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             }
           },
           indexes: [
-            /**
-                                     * RxDB will always append the primaryKey to an index
-                                     * if the primaryKey was not used in the index before.
-                                     * This ensures we have a deterministic sorting when querying documents
-                                     * from that index.
-                                     */
             ['equal', 'id'],
             ['increment', 'id'],
             ['random', 'id'],
@@ -1085,8 +1108,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema,
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const docsAmount = 6
@@ -1115,10 +1138,10 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
 
         async function testQuery(query: FilledMangoQuery<RandomDoc>): Promise<void> {
           const preparedQuery = prepareQuery(
-            storageInstance.schema,
+            storageInstance!.schema,
             query
           )
-          const docsViaQuery = (await storageInstance.query(preparedQuery)).documents
+          const docsViaQuery = (await storageInstance!.query(preparedQuery)).documents
           if (docsViaQuery.length !== docsAmount) {
             throw new Error('docs missing')
           }
@@ -1142,9 +1165,9 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
             sort: [
               { equal: 'asc' },
               /**
-                                           * RxDB will always append the primaryKey as last sort parameter
-                                           * if the primary key is not used in the sorting before.
-                                           */
+               * RxDB will always append the primaryKey as last sort parameter
+               * if the primary key is not used in the sorting before.
+               */
               { id: 'asc' }
             ],
             skip: 0
@@ -1179,8 +1202,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema,
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const insertResult = await storageInstance.bulkWrite([
           {
@@ -1199,7 +1222,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }
         ], testContext)
 
-        expect(insertResult.error).toStrictEqual({})
+        expect(insertResult.error).toStrictEqual([])
 
         const preparedQuery = prepareQuery<NestedDoc>(
           schema,
@@ -1221,10 +1244,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
 
         expect(results.documents.length).toBe(1)
       })
-      /**
-                   * This failed on some storages when there are more
-                   * documents then the batchSize of the RxStorage
-                   */
       it('querying many documents should work', async ({ expect }) => {
         const schema = getTestDataSchema()
         storageInstance = await storage.createStorageInstance<TestDocType>({
@@ -1233,8 +1252,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema,
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const amount = 100
@@ -1276,8 +1295,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema,
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
         const preparedQueryAll = prepareQuery<TestDocType>(
           schema,
@@ -1290,7 +1309,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           }
         )
         async function ensureCountIs(nr: number): Promise<void> {
-          const result = await storageInstance.count(preparedQueryAll)
+          const result = await storageInstance!.count(preparedQueryAll)
           expect(result.count).toBe(nr)
         }
         await ensureCountIs(0)
@@ -1311,8 +1330,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getPseudoSchemaForVersion<TestDocType>(0, 'key'),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const pkey = 'foobar'
@@ -1334,17 +1353,17 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
         )
 
         const found = await storageInstance.findDocumentsById(['foobar'], false)
-        const foundDoc = found[pkey]
+        const foundDoc = found.at(0)
 
         expect(foundDoc).toStrictEqual(docData)
       })
 
       /**
-                   * Some storage implementations ran into some limits
-                   * like SQLite SQLITE_MAX_VARIABLE_NUMBER etc.
-                   * Writing many documents must just work and the storage itself
-                   * has to workaround any problems with that.
-                   */
+       * Some storage implementations ran into some limits
+       * like SQLite SQLITE_MAX_VARIABLE_NUMBER etc.
+       * Writing many documents must just work and the storage itself
+       * has to workaround any problems with that.
+       */
       it('should be able to insert and fetch many documents', async ({ expect }) => {
         storageInstance = await storage.createStorageInstance<TestDocType>({
           databaseInstanceToken: randomCouchString(10),
@@ -1352,8 +1371,8 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           collectionName: randomCouchString(12),
           schema: getTestDataSchema(),
           options: {},
-          multiInstance: false,
-          devMode: true
+          multiInstance: true,
+          devMode: false
         })
 
         const amount = 5000
@@ -1363,7 +1382,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
 
         // insert
         const writeResult = await storageInstance.bulkWrite(writeRows, 'insert-many-' + amount)
-        expect(writeResult.error).toStrictEqual({})
+        expect(writeResult.error).toStrictEqual([])
 
         // fetch again
         const fetchResult = await storageInstance.findDocumentsById(writeRows.map(r => r.document.key), false)
@@ -1378,11 +1397,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
       data: [
         human('aa', 10, 'alice'),
         human('bb', 20, 'bob'),
-        /**
-                         * One must have a longer id
-                         * because we had many bugs around how padLeft
-                         * works on custom indexes.
-                         */
         human('cc-looong-id', 30, 'carol'),
         human('dd', 40, 'dave'),
         human('ee', 50, 'eve')
@@ -1544,11 +1558,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
       data: [
         human('aa', 10, 'alice'),
         human('bb', 20, 'bob'),
-        /**
-                         * One must have a longer id
-                         * because we had many bugs around how padLeft
-                         * works on custom indexes.
-                         */
         human('cc-looong-id', 30, 'carol'),
         human('dd', 40, 'dave'),
         human('ee', 50, 'eve')
@@ -1613,9 +1622,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
           ]
         },
         {
-          /**
-                               * @link https://github.com/pubkey/rxdb/pull/4751
-                               */
           info: '$lt on primaryKey',
           query: {
             selector: {

@@ -27,15 +27,19 @@
  * 
  */
 import "./globals";
+
+import type {
+  InternalStoreDocType,
+  RxAttachmentWriteData,
+  RxDocumentData,
+  RxDocumentWriteData,
+  RxError,
+  RxJsonSchema,
+  RxStorage,
+  RxStorageInstanceCreationParams,
+} from 'rxdb'
+
 import {
-  type InternalStoreDocType,
-  type RxAttachmentWriteData,
-  type RxDocumentData,
-  type RxDocumentWriteData,
-  type RxError,
-  type RxJsonSchema,
-  type RxStorage,
-  type RxStorageInstanceCreationParams,
   b64DecodeUnicode,
   b64EncodeUnicode,
   clone,
@@ -55,7 +59,7 @@ import { type CipherWithOutput } from '@noble/ciphers/utils'
 
 export type { RxStorage } from 'rxdb'
 export type { CipherWithOutput } from '@noble/ciphers/utils'
-export const MINIMUM_PASSWORD_LENGTH: 8 = 8
+export const MINIMUM_PASSWORD_LENGTH = 8
 
 // We must keep nonce static to be able to restore the database later, user only has the password
 const nonce = Buffer.from('b47e1d4e5f7377c2e80a19b8', 'hex')
@@ -107,9 +111,6 @@ export type InternalStorePasswordDocType = InternalStoreDocType<{
   hash: string
 }>
 
-export interface EncryptableStorageType<Internals, InstanceCreationOptions> {
-  storage: RxStorage<Internals, InstanceCreationOptions>
-}
 
 /**
  * Create encrypted storage for pluto-encrypted
@@ -117,7 +118,9 @@ export interface EncryptableStorageType<Internals, InstanceCreationOptions> {
  * @returns RxStorage<Internals, InstanceCreationOptions>
  */
 export function wrappedKeyEncryptionStorage<Internals, InstanceCreationOptions>(
-  args: EncryptableStorageType<Internals, InstanceCreationOptions>
+  args: {
+    storage: RxStorage<Internals, InstanceCreationOptions>
+  }
 ): RxStorage<Internals, InstanceCreationOptions> {
   return Object.assign(
     {},
@@ -255,6 +258,7 @@ export function wrappedKeyEncryptionStorage<Internals, InstanceCreationOptions>(
           }
 
           return wrapRxStorageInstance(
+            params.schema,
             instance,
             modifyToStorage,
             modifyFromStorage,
@@ -296,5 +300,3 @@ function validatePassword(password: string) {
     })
   }
 }
-
-export * from './migration'

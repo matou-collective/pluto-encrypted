@@ -31,7 +31,9 @@ const externals = [
     "vitest",
     "rxjs/operators",
     "@faker-js/faker",
-    "async-test-util"
+    "async-test-util",
+    "rxdb/plugins/test-utils",
+    "crypto-js"
 ];
 
 export default function CreateConfig(buildPath, plugins = [], extraInputs = []) {
@@ -67,7 +69,7 @@ export default function CreateConfig(buildPath, plugins = [], extraInputs = []) 
             },
             plugins: allPlugins,
             external: externals,
-            treeshake: false
+            treeshake: false,
 
         },
         {
