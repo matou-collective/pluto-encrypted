@@ -43,11 +43,7 @@
         "unused-imports/no-unused-imports": "error",
         "unused-imports/no-unused-vars": "off"
     },
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
-    },
+    "settings": {},
     "env": {
         "browser": true,
         "node": true,
