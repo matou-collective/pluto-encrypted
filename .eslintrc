@@ -10,7 +10,8 @@
     "ignorePatterns": [
         "docs",
         "docs-html",
-        "packages/*/build"
+        "packages/*/build",
+        "examples"
     ],
     "plugins": [
         "@typescript-eslint",
