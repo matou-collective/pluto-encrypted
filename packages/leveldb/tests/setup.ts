@@ -5,11 +5,6 @@ import { addRxPlugin } from "rxdb";
 import { RxDBDevModePlugin } from "rxdb/plugins/dev-mode";
 import nodeCrypto from "crypto";
 
-// set up segfault handler
-const SegfaultHandler = require('segfault-handler');
- 
-SegfaultHandler.registerHandler("crash.log"); // With no argument, SegfaultHandler will generate a generic log file name
- 
 if (process.env.NODE_ENV === "debug") {
   addRxPlugin(RxDBDevModePlugin);
 }

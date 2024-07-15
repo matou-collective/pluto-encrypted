@@ -26,7 +26,6 @@ import {
   randomCouchString,
   shuffleArray
 } from 'rxdb'
-import omit from 'lodash.omit'
 import type {
   NestedDoc,
   OptionalValueTestDoc,
@@ -409,10 +408,13 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
         expect(updateResponse.success.at(0)).not.toBe(undefined)
         expect(updateResponse.error).toStrictEqual([])
 
-        const updateResponseDoc = omit(
-          updateResponse.success.at(0),
-          ['_deleted', '_rev', '_meta']
-        )
+        const updateResponseDoc = updateResponse.success.at(0)!
+        // @ts-expect-error typescript :D
+        delete (updateResponseDoc)._deleted
+        // @ts-expect-error typescript :D
+        delete (updateResponseDoc)._rev
+        // @ts-expect-error typescript :D
+        delete (updateResponseDoc)._meta
 
         expect(updateResponseDoc).toStrictEqual({
           key: docId,
