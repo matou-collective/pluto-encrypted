@@ -70,6 +70,7 @@ export class LevelDBInternal<RxDocType> implements LevelDBStorageInternals<RxDoc
   }
 
   async getIndex(key: string): Promise<string[]> {
+    console.log('getIndex', key)
     const db = await this.getInstance()
     return db.get(key)
       .then(result => result ? JSON.parse(result) : [])
@@ -128,7 +129,7 @@ export class LevelDBInternal<RxDocType> implements LevelDBStorageInternals<RxDoc
   }
 
   async setIndex(key: string, ids: string[]) {
-    // console.log('setIndex', { key, ids })
+    console.log('setIndex', key, ids)
     // QUESTION: why is the value being store in the key?
     // QUESTION: if setIndex + getIndex are misaligned...
     //  - then how do we know what these functions SHOULD be doing?
