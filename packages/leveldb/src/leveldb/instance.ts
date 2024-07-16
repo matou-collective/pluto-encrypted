@@ -166,15 +166,10 @@ export class RxStorageIntanceLevelDB<RxDocType> implements RxStorageInstance<
       );
     }
 
-    console.log('queryPlan', queryPlan)
-    // this makes the index .. which is wrong!?
-    // NOTE: it's wrong
-
     const queryPlanFields: string[] = queryPlan.index;
     const mustManuallyResort = !queryPlan.sortSatisfiedByIndex;
     const index: string[] | undefined = queryPlanFields;
-    const _index = ['key']
-    console.log({ _index })
+    const _index: string[] = [this.schema.primaryKey.toString()]
 
     const lowerBound: any[] = queryPlan.startKeys;
     const lowerBoundString = getStartIndexStringFromLowerBound(
@@ -192,8 +187,6 @@ export class RxStorageIntanceLevelDB<RxDocType> implements RxStorageInstance<
 
     // HACK: getIndex(index) is doing the wrong thing ... so mutate the index (after upper/lower bound stuff)
     const indexName = getIndexName([this.collectionName, 'key'])
-    console.log('index (wrong)', index)
-    console.log('getIndexName =>', indexName)
 
     // const indexName = getIndexName(index);
     // // => '_meta.lwt,key'
@@ -201,52 +194,36 @@ export class RxStorageIntanceLevelDB<RxDocType> implements RxStorageInstance<
     // with setIndex
     const docsWithIndex = (await this.internals.getIndex(indexName))
 
-    console.log({ docsWithIndex })
-    console.log({ lowerBoundString, upperBoundString })
-
     let indexOfLower = (queryPlan.inclusiveStart ? boundGE : boundGT)(
-      // docsWithIndex,
-      // HACK: ecchh
-      docsWithIndex.map(d => { return { indexString: d } }),
-      {
-        indexString: lowerBoundString
-      } as any,
+      docsWithIndex,
+      [
+        lowerBoundString
+      ] as any,
       compareDocsWithIndex
-      // NOTE: this does comparisons like "a.indexString < b.indexString"
-      // QUESTION: Are we expecting docsWithIndex to have an indexString attribute?
     );
 
     const indexOfUpper = (queryPlan.inclusiveEnd ? boundLE : boundLT)(
-      // docsWithIndex,
-      // HACK: ecchh
-      docsWithIndex.map(d => { return { indexString: d } }),
-      {
-        indexString: upperBoundString
-      } as any,
+      docsWithIndex,
+      [
+        upperBoundString
+      ] as any,
       compareDocsWithIndex
     );
-
-    console.log({ indexOfLower, indexOfUpper })
-    // { indexOfLower: 0, indexOfUpper: -1 } // QUESTION: what does -1 encode here?
 
     let rows: RxDocumentData<RxDocType>[] = [];
     let done = false;
     while (!done) {
       const currentRow = docsWithIndex[indexOfLower];
-      console.log({ currentRow })
       if (
         !currentRow ||
         indexOfLower > indexOfUpper
       ) {
-        console.log('break')
         break;
       }
 
       const [currentDoc] = await this.findDocumentsById([currentRow], false)
-      console.log({ currentDoc })
 
       if (currentDoc && (!queryMatcher || queryMatcher(currentDoc))) {
-        console.log('match!')
         rows.push(currentDoc);
       }
 

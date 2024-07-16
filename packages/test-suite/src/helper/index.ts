@@ -79,7 +79,6 @@ export function prepareQuery<RxDocType>(schema, mutateableQuery) {
      * Store the query plan together with the
      * prepared query to save performance.
      */
-  console.log('prepareQueryPlan', schema, mutateableQuery)
   // NOTE: schema.indexes
   // => [ [ '_deleted', 'key' ], [ '_meta.lwt', 'key' ] ]
   // QUESTION: these indexes lead directly to the query...

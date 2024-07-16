@@ -1013,7 +1013,7 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
 
     describe('.query()', () => {
       // TODO: this test is failing with leveldb
-      it.only('should find all documents', async ({ expect }) => {
+      it('should find all documents', async ({ expect }) => {
         const _storage = await testStorage.getStorage()
         const storageInstance = await _storage.createStorageInstance<{ key: string, value: string }>({
           databaseInstanceToken: randomCouchString(10),
@@ -1401,7 +1401,6 @@ export function runTestSuite(suite: TestSuite, testStorage: RxTestStorage): void
         async function writeDoc () {
           const docData = getWriteData()
           const writeResponse = await storageInstance.bulkWrite([{ document: clone(docData) }], testContext)
-          console.log(writeResponse)
 
           expect(writeResponse.error).toStrictEqual([])
           const first = writeResponse.success.at(0);
