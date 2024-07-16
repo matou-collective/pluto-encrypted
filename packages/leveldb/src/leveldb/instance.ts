@@ -46,6 +46,18 @@ export function getIndexName(index: string[]): string {
   return `[${index.join('+')}]`;
 }
 
+// HACK - function to remove new fields that have been added to
+// the index
+function fixIndexes (indexes) {
+  return indexes
+    .filter(index => {
+      if (index === '_deleted') return false
+      if (index === '_meta.lwt') return false
+
+      return true
+    })
+}
+
 export class RxStorageIntanceLevelDB<RxDocType> implements RxStorageInstance<
   RxDocType,
   LevelDBStorageInternals<RxDocType>,
@@ -150,7 +162,7 @@ export class RxStorageIntanceLevelDB<RxDocType> implements RxStorageInstance<
     return docs
   }
 
-  async query(preparedQuery: PreparedQuery<RxDocType>): Promise<RxStorageQueryResult<RxDocType>> {
+  async query(preparedQuery: PreparedQuery<RxDocType>): Promise<RxStorageQueryResult<RxDocType>> {    
     const queryPlan = preparedQuery.queryPlan;
     const query = preparedQuery.query;
 
@@ -160,81 +172,75 @@ export class RxStorageIntanceLevelDB<RxDocType> implements RxStorageInstance<
 
     let queryMatcher: QueryMatcher<RxDocumentData<RxDocType>> | false = false;
     if (!queryPlan.selectorSatisfiedByIndex) {
-      queryMatcher = getQueryMatcher(
-        this.schema,
-        preparedQuery.query
-      );
+        queryMatcher = getQueryMatcher(
+            this.schema,
+            query
+        );
     }
 
-    const queryPlanFields: string[] = queryPlan.index;
-    const mustManuallyResort = !queryPlan.sortSatisfiedByIndex;
-    const index: string[] | undefined = queryPlanFields;
-    const _index: string[] = [this.schema.primaryKey.toString()]
+    const mustManuallyResort = !queryPlan.sortSatisfiedByIndex;  
+    const queryPlanFields: string[] = fixIndexes(queryPlan.index);
 
     const lowerBound: any[] = queryPlan.startKeys;
     const lowerBoundString = getStartIndexStringFromLowerBound(
-      this.schema,
-      _index, // index,
-      lowerBound
+        this.schema,
+        queryPlanFields,
+        lowerBound
     );
 
     const upperBound: any[] = queryPlan.endKeys;
     const upperBoundString = getStartIndexStringFromUpperBound(
-      this.schema,
-      _index, // index,
-      upperBound
+        this.schema,
+        queryPlanFields,
+        upperBound
     );
-
+ 
     // HACK: getIndex(index) is doing the wrong thing ... so mutate the index (after upper/lower bound stuff)
-    const indexName = getIndexName([this.collectionName, 'key'])
+    const indexName = getIndexName([this.collectionName, ...queryPlanFields])
 
-    // const indexName = getIndexName(index);
-    // // => '_meta.lwt,key'
-    // QUESTION: this doesn't seem to map to any of the indexes being entered?
-    // with setIndex
-    const docsWithIndex = (await this.internals.getIndex(indexName))
+    const docsWithIndex = await this.internals.getIndex(indexName)
 
     let indexOfLower = (queryPlan.inclusiveStart ? boundGE : boundGT)(
       docsWithIndex,
       [
-        lowerBoundString
+          lowerBoundString
       ] as any,
       compareDocsWithIndex
-    );
+  );
 
     const indexOfUpper = (queryPlan.inclusiveEnd ? boundLE : boundLT)(
-      docsWithIndex,
-      [
-        upperBoundString
-      ] as any,
-      compareDocsWithIndex
+        docsWithIndex,
+        [
+            upperBoundString
+        ] as any,
+        compareDocsWithIndex
     );
 
     let rows: RxDocumentData<RxDocType>[] = [];
-    let done = false;
-    while (!done) {
-      const currentRow = docsWithIndex[indexOfLower];
-      if (
-        !currentRow ||
-        indexOfLower > indexOfUpper
-      ) {
-        break;
-      }
+        let done = false;
+        while (!done) {
+          const currentRow = docsWithIndex[indexOfLower];
+          if (
+              !currentRow ||
+              indexOfLower > indexOfUpper
+          ) {
+              break;
+          }
+          
+          const [currentDoc] = await this.findDocumentsById([currentRow], false)
 
-      const [currentDoc] = await this.findDocumentsById([currentRow], false)
+          if (currentDoc && (!queryMatcher || queryMatcher(currentDoc))) {
+            rows.push(currentDoc);
+          }
 
-      if (currentDoc && (!queryMatcher || queryMatcher(currentDoc))) {
-        rows.push(currentDoc);
-      }
+          if (
+              (rows.length >= skipPlusLimit && !mustManuallyResort)
+          ) {
+              done = true;
+          }
 
-      if (
-        (rows.length >= skipPlusLimit && !mustManuallyResort)
-      ) {
-        done = true;
-      }
-
-      indexOfLower++;
-    }
+          indexOfLower++;
+        }
 
     if (mustManuallyResort) {
       const sortComparator = getSortComparator(this.schema, preparedQuery.query);
@@ -244,7 +250,7 @@ export class RxStorageIntanceLevelDB<RxDocType> implements RxStorageInstance<
     // apply skip and limit boundaries.
     rows = rows.slice(skip, skipPlusLimit);
     return Promise.resolve({
-      documents: rows
+        documents: rows
     });
   }
 
