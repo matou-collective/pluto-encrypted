@@ -44,9 +44,9 @@ export class LevelDBInternal<RxDocType> implements LevelDBStorageInternals<RxDoc
 
       await pull(
         pullLevel.read(db),
-        pull.filter(row => row && !Array.isArray(row.value)),
+        pull.filter(row => row && !row.value.match(/^\[.*\]$/)),
         pull.map(row => {
-          docsInDbMap.set(row.key, row.value)
+          docsInDbMap.set(row.key, JSON.parse(row.value))
           return row
         }),
         pull.collectAsPromise()
