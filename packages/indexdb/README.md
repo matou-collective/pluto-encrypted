@@ -40,7 +40,7 @@ export default storage;
 
 ### Using with Atala Prism Wallet SDK
 
-Here is a practical example of how to integrate `@pluto-encrypted/indexdb` with the Atala Prism Wallet SDK:
+Here is a practical example of how to integrate `@pluto-encrypted/indexdb` with the [Atala Prism Wallet SDK](https://github.com/hyperledger/identus-edge-agent-sdk-ts):
 
 ```typescript
 import { Agent, Domain, Store, Apollo, Pluto } from '@atala/prism-wallet-sdk'
